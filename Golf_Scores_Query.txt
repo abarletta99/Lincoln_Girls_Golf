@@ -1,0 +1,44 @@
+#Top 5 Days with Highest Combined Hole-in-Ones
+
+SELECT 
+    "Date",
+    "Daily Temp High (F)",
+    "Rain (0=No, 1=Yes)",
+    ("Lauren (Hole-in-Ones)" + 
+     "Alex (Hole-in-Ones)" + 
+     "Chris (Hole-in-Ones)" + 
+     "Athena (Hole-in-Ones)" + 
+     "Dalton (Hole-in-Ones)") AS total_hole_in_ones
+FROM golf_scores
+ORDER BY total_hole_in_ones DESC
+LIMIT 5;
+
+#Number of Days A Player Scored more than 1 Hole-in-One
+
+SELECT
+    SUM(CASE WHEN "Lauren (Hole-in-Ones)" > 1 THEN 1 ELSE 0 END) AS lauren_over_1,
+    SUM(CASE WHEN "Alex (Hole-in-Ones)" > 1 THEN 1 ELSE 0 END) AS alex_over_1,
+    SUM(CASE WHEN "Chris (Hole-in-Ones)" > 1 THEN 1 ELSE 0 END) AS chris_over_1,
+    SUM(CASE WHEN "Athena (Hole-in-Ones)" > 1 THEN 1 ELSE 0 END) AS athena_over_1,
+    SUM(CASE WHEN "Dalton (Hole-in-Ones)" > 1 THEN 1 ELSE 0 END) AS dalton_over_1
+FROM golf_scores;
+
+#Average Hole-in-One by Temperature Categories
+
+SELECT
+    CASE 
+        WHEN "Daily Temp High (F)" BETWEEN 70 AND 74 THEN '70-74°F'
+        WHEN "Daily Temp High (F)" BETWEEN 75 AND 79 THEN '75-79°F'
+        WHEN "Daily Temp High (F)" BETWEEN 80 AND 84 THEN '80-84°F'
+        WHEN "Daily Temp High (F)" BETWEEN 85 AND 89 THEN '85-89°F'
+        WHEN "Daily Temp High (F)" BETWEEN 90 AND 94 THEN '90-94°F'
+        ELSE '95-99°F'
+    END AS temp_bucket,
+    AVG("Lauren (Hole-in-Ones)") AS avg_lauren,
+    AVG("Alex (Hole-in-Ones)") AS avg_alex,
+    AVG("Chris (Hole-in-Ones)") AS avg_chris,
+    AVG("Athena (Hole-in-Ones)") AS avg_athena,
+    AVG("Dalton (Hole-in-Ones)") AS avg_dalton
+FROM golf_scores
+GROUP BY temp_bucket
+ORDER BY temp_bucket;
